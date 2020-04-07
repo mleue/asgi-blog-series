@@ -19,8 +19,6 @@ def make_response(
 ):
     if headers is None:
         headers = []
-    if body:
-        headers.append((b"Content-Length", str(len(body)).encode("utf-8")))
     content = [
         create_status_line(status_code),
         format_headers(headers),

@@ -5,6 +5,7 @@ class HttpRequestParser:
     def __init__(self, protocol):
         self.protocol = protocol
         self.buffer = SplitBuffer()
+        self.http_method = ""
         self.done_parsing_start = False
         self.done_parsing_headers = False
         self.expected_body_length = 0
@@ -30,6 +31,7 @@ class HttpRequestParser:
         line = self.buffer.pop(separator=b"\r\n")
         if line is not None:
             http_method, url, http_version = line.strip().split()
+            self.http_method = http_method
             self.done_parsing_start = True
             self.protocol.on_url(url)
             self.parse()
@@ -44,4 +46,5 @@ class HttpRequestParser:
                 self.protocol.on_header(name, value)
             else:
                 self.done_parsing_headers = True
+                self.protocol.on_headers_complete()
             self.parse()
